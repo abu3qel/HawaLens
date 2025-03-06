@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRunning, FaMask, FaWindowClose } from "react-icons/fa";
+import { FaRunning, FaWindowClose, FaMask, FaAirFreshener } from "react-icons/fa";
 
 // AQI Calculation Function
 const calculateAQI = (Cp, breakpoints) => {
@@ -13,6 +13,7 @@ const AQI_BREAKPOINTS = {
     { BPLo: 0, BPHi: 12, ILo: 0, IHi: 50 },
     { BPLo: 12.1, BPHi: 35.4, ILo: 51, IHi: 100 },
     { BPLo: 35.5, BPHi: 55.4, ILo: 101, IHi: 150 },
+    { BPLo: 55.5, BPHi: 150.4, ILo: 151, IHi: 200 },
   ],
   pm10: [
     { BPLo: 0, BPHi: 54, ILo: 0, IHi: 50 },
@@ -22,10 +23,26 @@ const AQI_BREAKPOINTS = {
   o3: [
     { BPLo: 0, BPHi: 0.054, ILo: 0, IHi: 50 },
     { BPLo: 0.055, BPHi: 0.070, ILo: 51, IHi: 100 },
+    { BPLo: 0.071, BPHi: 0.085, ILo: 101, IHi: 150 },
+  ],
+  no2: [
+    { BPLo: 0, BPHi: 53, ILo: 0, IHi: 50 },
+    { BPLo: 54, BPHi: 100, ILo: 51, IHi: 100 },
+    { BPLo: 101, BPHi: 360, ILo: 101, IHi: 150 },
+  ],
+  so2: [
+    { BPLo: 0, BPHi: 35, ILo: 0, IHi: 50 },
+    { BPLo: 36, BPHi: 75, ILo: 51, IHi: 100 },
+    { BPLo: 76, BPHi: 185, ILo: 101, IHi: 150 },
+  ],
+  co: [
+    { BPLo: 0, BPHi: 4.4, ILo: 0, IHi: 50 },
+    { BPLo: 4.5, BPHi: 9.4, ILo: 51, IHi: 100 },
+    { BPLo: 9.5, BPHi: 12.4, ILo: 101, IHi: 150 },
   ],
 };
 
-// Function to get AQI for a pollutant
+// Find the correct breakpoint range
 const getAQI = (pollutant, value) => {
   const breakpoints = AQI_BREAKPOINTS[pollutant];
   if (!breakpoints) return null;
@@ -42,20 +59,31 @@ const AQIRecommendations = ({ data }) => {
   if (!data) return <p>No AQI data available</p>;
 
   const pollutants = data.list[0].components;
+
+  // Calculate AQI for each pollutant
   const pollutantDetails = [
     { key: "pm2_5", label: "PM2.5" },
     { key: "pm10", label: "PM10" },
     { key: "o3", label: "O₃" },
+    { key: "no2", label: "NO₂" },
+    { key: "so2", label: "SO₂" },
+    { key: "co", label: "CO" },
   ].map((pollutant) => ({
     ...pollutant,
     aqi: getAQI(pollutant.key, pollutants[pollutant.key]),
   }));
 
-  // Get highest AQI
-  const highestAQI = pollutantDetails.reduce((max, p) => (p.aqi > max ? p.aqi : max), 0);
+  // Get highest AQI and main pollutant
+  const highestAQI = pollutantDetails
+  .filter((p) => p.aqi !== null && p.aqi !== undefined) // Ensure valid AQI values
+  .reduce((max, p) => (p.aqi > max ? p.aqi : max), 0);
+
+  console.log("highestAQI",highestAQI);
   const mainPollutant = pollutantDetails.find((p) => p.aqi === highestAQI);
 
-  // Recommendations
+  console.log("AQI Recalculated in Recommendations:", highestAQI, "Main Pollutant:", mainPollutant);
+
+  // Define recommendations
   const recommendations = [
     {
       min: 0,
@@ -78,15 +106,29 @@ const AQIRecommendations = ({ data }) => {
     {
       min: 151,
       max: 200,
-      message: "Reduce outdoor exercise. Consider an air purifier indoors.",
-      icon: <FaWindowClose className="text-red-500" />,
+      message: `Reduce outdoor exercise. Consider an air purifier indoors. (Main pollutant: ${mainPollutant?.label})`,
+      icon: <FaAirFreshener className="text-red-500" />,
+    },
+    {
+      min: 201,
+      max: 300,
+      message: "Close your windows to avoid dirty outdoor air.",
+      icon: <FaWindowClose className="text-purple-500" />,
+    },
+    {
+      min: 301,
+      max: 500,
+      message: "Hazardous air quality! Stay indoors and use an air purifier.",
+      icon: <FaAirFreshener className="text-maroon-500" />,
     },
   ];
 
+  // Find correct recommendation
   const recommendation = recommendations.find((rec) => highestAQI >= rec.min && highestAQI <= rec.max);
 
   return (
-    <div className="bg-white shadow-lg p-6 rounded-lg">
+
+    <div className="bg-white shadow-lg p-6 rounded-lg w-full max-w-2xl">
       <h2 className="text-xl font-bold text-gray-800">Health Recommendations</h2>
       {recommendation && (
         <div className="flex items-center space-x-4 mt-4">
