@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CitySearch from "./components/CitySearch";
 import AQICard from "./components/AQICard";
+import AQIRecommendations from "./components/aqiRecommendations";
 import { getCoordinatesByCity } from "./api/geocodingUtils";
 import { getAQIDataForCity } from "./utils/apiHandler";
 
@@ -34,6 +35,7 @@ const Home = () => {
 
           <CitySearch onSelectCity = {handleCitySelect}/>
           <AQICard data={aqiData} className="w-full"/>
+          <AQIRecommendations data={aqiData} className="w-full"/>
         </div>
       );
       
