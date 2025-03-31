@@ -6,16 +6,21 @@ import React from 'react'
 import Header from './components/Header'
 import Home from "./Home";
 
+import { AuthProvider } from './components/AuthContext'
+import AuthModal from './components/AuthModal'
+
 import Footer from './components/Footer'
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div className = "min-h-screen flex flex-col">
-    <Header />
-    <Home />
-    <Footer />
-    </div>
+    <AuthProvider>
+      <div className = "min-h-screen flex flex-col">
+      <Header />
+      <Home />
+      <Footer />
+      </div>
+    </AuthProvider>
   )
 }
 
