@@ -11,6 +11,7 @@ const BASE_URL = "https://api.openweathermap.org/geo/1.0";
 export const getCoordinatesByCity = async (cityName) => {
   try {
     const response = await axios.get(`${BASE_URL}/direct?q=${cityName}&limit=1&appid=${API_KEY}`);
+    console.log(response.data);
     if (response.data.length > 0) {
       return response.data[0]; // Return first match
     }

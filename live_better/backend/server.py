@@ -14,7 +14,17 @@ MODEL_DIR = "/Users/burakose/Desktop/AI/G1/Code/my-aqi-app/Models/"
 OPENAQ_API_KEY = "89ccb65589d25ad1b7ac1152014318f21278e61170f6c81d085574977b602188"
 OPENWEATHER_API_KEY = "554ac7e911b71cd3a8d0673582e1fa5e"
 OPENAQ_API_BASE_URL = 'https://api.openaq.org/v3'
+models = {}
+for file in os.listdir(MODEL_DIR):
+    if file.endswith("_model.pkl"):
+        pollutant = file.replace("_model.pkl", "")  # Extract pollutant name
+        models[pollutant] = joblib.load(os.path.join(MODEL_DIR, file))
 
+# Extract feature names from one model (assuming all models were trained with the same features)
+TRAINED_FEATURES = list(next(iter(models.values())).feature_names_in_)
+
+print("Loaded Models:", list(models.keys()))
+print("Loaded Model Features:", TRAINED_FEATURES)
 
 # AQI Breakpoints (Same as Frontend)
 AQI_BREAKPOINTS = {
@@ -62,6 +72,71 @@ def calculate_aqi(pollutant, concentration):
 
     return AQI_BREAKPOINTS[pollutant][-1]["IHi"]  # Max AQI if value is beyond range
 
+@app.route('/predict_aqi', methods=['POST'])
+def predict_aqi():
+    try:
+        data = request.json
+        print("Received Data:", data)
+
+        pollutants = ["co", "no2", "o3", "pm10", "pm25", "so2"]
+
+        # Ensure pollutants have default values
+        initial_values = {p: data.get(p, 0) or 0 for p in pollutants}
+
+        # **Iteratively predict the next 96 hours**
+        predictions = []
+        current_values = initial_values.copy()
+
+        for i in range(96):  # 4 days (96 hours)
+            timestamp = datetime.utcnow() + timedelta(hours=i)
+
+            # Prepare feature set using previous values (rolling avg + lags)
+            feature_data = {
+                "year": timestamp.year,
+                "month": timestamp.month,
+                "day": timestamp.day,
+                "dayofweek": timestamp.weekday(),
+                "hour": timestamp.hour,
+                "pm10_7d_roll": np.mean([current_values["pm10"] for _ in range(7)]),
+                "pm10_lag1": current_values["pm10"],
+                "no2_7d_roll": np.mean([current_values["no2"] for _ in range(7)]),
+                "no2_lag1": current_values["no2"],
+                "so2_7d_roll": np.mean([current_values["so2"] for _ in range(7)]),
+                "so2_lag1": current_values["so2"],
+                "o3_7d_roll": np.mean([current_values["o3"] for _ in range(7)]),
+                "o3_lag1": current_values["o3"],
+                "temperature": 20,  # Placeholder temperature
+                "pm25_7d_roll": np.mean([current_values["pm25"] for _ in range(7)]),
+                "pm25_lag1": current_values["pm25"],
+                "co_7d_roll": np.mean([current_values["co"] for _ in range(7)]),
+                "co_lag1": current_values["co"],
+            }
+
+            df = pd.DataFrame([feature_data])
+            df = df[TRAINED_FEATURES]  # Ensure correct feature order
+            df = df.astype(float)
+
+            # Predict next hour pollutant concentrations
+            predicted_values = {p: models[p].predict(df)[0] for p in models}
+
+            # Compute AQI for each predicted pollutant
+            aqi_scores = {p: calculate_aqi(p, predicted_values[p]) for p in pollutants}
+
+            # Store predictions
+            predictions.append({
+                "dt": int(timestamp.timestamp()),
+                "aqi": aqi_scores
+            })
+
+            # Update current values for the next iteration
+            current_values.update(predicted_values)
+
+        print(predictions)
+        return jsonify({"forecast": predictions})
+
+    except Exception as e:
+        print("Error:", str(e))
+        return jsonify({"error": str(e)}), 400
 
 @app.route('/api/search', methods=['GET'])
 def search_locations():
@@ -169,7 +244,6 @@ def get_stations():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
 @app.route('/api/aqi', methods=['GET'])
 def get_aqi():
     """Proxy endpoint for fetching current AQI data"""
@@ -217,6 +291,5 @@ def get_aqi():
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

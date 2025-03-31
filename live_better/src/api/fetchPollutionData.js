@@ -11,7 +11,7 @@ const BASE_URL = "https://api.openweathermap.org/data/2.5/air_pollution";
  */
 export const fetchCurrentAQI = async (lat, lon) => {
   try {
-    const response = await axios.get(`${BASE_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+    const response = await axios.get(`/api/aqi?lat=${lat}&lon=${lon}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching current AQI:", error);
