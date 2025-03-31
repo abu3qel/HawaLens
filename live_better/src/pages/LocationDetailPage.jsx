@@ -203,6 +203,23 @@ const LocationDetailPage = () => {
                       Coordinates: {locationInfo.coordinates.lat.toFixed(4)}, {locationInfo.coordinates.lon.toFixed(4)}
                     </p>
                   )}
+
+{aqiData && (
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={exportToCSV}
+                          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                        >
+                          Export CSV
+                        </button>
+                        <button
+                          onClick={exportToPDF}
+                          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                        >
+                          Export PDF
+                        </button>
+                      </div>
+                    )}
                 </div>
 
                 <div className="space-y-10">
