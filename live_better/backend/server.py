@@ -217,5 +217,6 @@ def get_aqi():
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
