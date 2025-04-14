@@ -1,3 +1,4 @@
+// AuthModal.js
 import React, { useState, useContext } from 'react';
 import { AuthContext } from './AuthContext';
 
@@ -6,6 +7,7 @@ const AuthModal = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -14,7 +16,10 @@ const AuthModal = ({ onClose }) => {
       if (isLogin) {
         await login(username, password);
       } else {
-        await register(username, password);
+        if (!email.includes('@')) {
+          throw new Error('Please enter a valid email address');
+        }
+        await register(username, password, email);
       }
       onClose();
     } catch (err) {
@@ -40,6 +45,18 @@ const AuthModal = ({ onClose }) => {
             className="w-full p-2 mb-3 border rounded text-black"
             required
           />
+          
+          {!isLogin && (
+            <input
+              type="email"
+              placeholder="Email (for alerts)"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-2 mb-3 border rounded text-black"
+              required
+            />
+          )}
+
           <input
             type="password"
             placeholder="Password"
