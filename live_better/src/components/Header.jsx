@@ -19,7 +19,7 @@ const Header = () => {
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex space-x-6">
+          {/* <nav className="hidden md:flex space-x-6">
             {["Air Quality", "Air Monitors"].map((item) => (
               <a
                 key={item}
@@ -29,34 +29,34 @@ const Header = () => {
                 {item}
               </a>
             ))}
-          </nav>
+          </nav> */}
 
           <div className="flex items-center space-x-4">
             {/* Search Bar */}
-            <div className="relative hidden md:block">
+            {/* <div className="relative hidden md:block">
               <input
                 type="text"
                 placeholder="Search"
                 className="border border-gray-300 rounded-md px-3 py-1.5 pl-8 focus:ring-2 focus:ring-blue-300 text-black"
               />
               <Search className="absolute left-2 top-2 h-5 w-5 text-gray-400" />
-            </div>
+            </div> */}
 
             {/* Auth Section */}
             {currentUser ? (
-              <div className="flex items-center space-x-2">
-                <span className="text-gray-700">Welcome, {currentUser}</span>
-                <button
-                  onClick={logout}
-                  className="text-gray-700 hover:text-blue-500 transition duration-200"
-                >
-                  Logout
-                </button>
-              </div>
+            <div className="flex items-center space-x-2">
+            <span className="text-gray-700">Welcome, {currentUser.username}</span> {/* Fixed: Using username property */}
+            <button
+              onClick={logout}
+              className="text-gray-700 hover:text-blue-500 transition duration-200"
+            >
+              Logout
+            </button>
+          </div>
             ) : (
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="text-gray-700 hover:text-blue-500 transition duration-200"
+                className="text-white hover:text-blue-500 transition duration-200"
               >
                 Sign in
               </button>
