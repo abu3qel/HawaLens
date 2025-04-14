@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getHourlyForecast, getAirQuality } from "../api/fetchWeatherData";
+import { fetchAQIForecast } from "../api/fetchPollutionData";
 
 const HourlyForecast = ({ selectedCity, selectedCoordinates }) => {
   const [forecastData, setForecastData] = useState([]);
@@ -17,7 +18,28 @@ const HourlyForecast = ({ selectedCity, selectedCoordinates }) => {
     setLoading(true);
     try {
       const hourlyResponse = await getHourlyForecast(lat, lon);
-      const aqiResponse = await axios.post("http://127.0.0.1:5001/predict_aqi", { lat, lon });
+      const airQualityResponse = await fetchAQIForecast(lat, lon);
+      const forecastData = {
+        hourly: hourlyResponse.list.slice(0, 96).map(hour => ({
+          dt: hour.dt,
+          main: {
+            temp: hour.main.temp,
+            humidity: hour.main.humidity,
+            pressure: hour.main.pressure
+          },
+          wind: {
+            speed: hour.wind.speed
+          },
+          rain: hour.rain ? { '1h': hour.rain['1h'] || 0 } : undefined
+        })),
+        air: airQualityResponse.list || [],
+        currentPM25: airQualityResponse.list[0]?.components?.pm2_5 || 10
+      };
+
+      console.log(airQualityResponse, "air quality response");
+
+      // console.log("Hourly Response:", hourlyResponse);
+      const aqiResponse = await axios.post("http://127.0.0.1:5001/predict_aqi", { forecastData });
 
       if (hourlyResponse && hourlyResponse.list && aqiResponse.data.forecast) {
         const formattedHourly = hourlyResponse.list.slice(0, 96).map((hour, index) => {
@@ -71,7 +93,7 @@ const HourlyForecast = ({ selectedCity, selectedCoordinates }) => {
                       className="px-4 py-2 rounded-md text-white font-semibold min-w-[70px] text-center"
                       style={{ backgroundColor: hour.aqi !== null && hour.aqi > 50 ? "#FFC107" : "#8BC34A" }}
                     >
-                      AQI: {hour.aqi !== null ? hour.aqi.toFixed(2) : "N/A"} ({hour.mainPollutant})
+                      AQI: {hour.aqi !== null ? hour.aqi.toFixed(2) : "N/A"}
                     </span>
                     <img src={hour.icon} alt="weather icon" className="w-8" />
                     <span className="text-lg">{hour.temp}°</span>

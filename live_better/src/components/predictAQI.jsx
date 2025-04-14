@@ -114,4 +114,4 @@ const PredictAQI = ({ selectedCity, selectedCoordinates }) => {
   );
 };
 
-export default PredictAQI;
+export default PredictAQI;

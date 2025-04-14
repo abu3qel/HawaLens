@@ -139,8 +139,9 @@ def predict_aqi():
     try:
         # Parse and validate input data
         data = request.json
-        if not data:
-            return jsonify({"error": "Missing request data"}), 400
+        print("Received data:", data)
+        # if not data:
+        #     return jsonify({"error": "Missing request data"}), 400
             
         if 'forecastData' not in data:
             return jsonify({"error": "Missing forecastData in request"}), 400
