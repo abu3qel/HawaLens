@@ -18,7 +18,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-MODEL_DIR = "/Models/"
+MODEL_DIR = r"C:\Users\sa260\GRP1.ai\live_better\models"
 OPENAQ_API_KEY = "89ccb65589d25ad1b7ac1152014318f21278e61170f6c81d085574977b602188"
 OPENWEATHER_API_KEY = "554ac7e911b71cd3a8d0673582e1fa5e"
 OPENAQ_API_BASE_URL = 'https://api.openaq.org/v3'
@@ -68,8 +68,8 @@ class ContinualLSTMModel(nn.Module):
     
 
 
-MODEL_PATH = "Models/pm25_model.pt"
-model = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
+MODEL_PATH = r"C:\Users\sa260\GRP1.ai\live_better\models\pm25_model.pt"
+model = torch.load(MODEL_PATH, map_location=torch.device('cpu'), weights_only=False)
 model.eval()
 
 # AQI Breakpoints (Same as Frontend)
