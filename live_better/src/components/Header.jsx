@@ -15,7 +15,7 @@ const Header = () => {
         <div className="flex justify-between items-center py-4">
           {/* Left: Logo */}
           <div className="flex items-center">
-            <img src={logo} alt="IQAir Logo" className="h-8" />
+            <img src={logo} alt="IQAir Logo" className="h-20" />
           </div>
 
           {/* Navigation Links */}
@@ -48,7 +48,7 @@ const Header = () => {
             <span className="text-gray-700">Welcome, {currentUser.username}</span> {/* Fixed: Using username property */}
             <button
               onClick={logout}
-              className="text-gray-700 hover:text-blue-500 transition duration-200"
+              className="text-white hover:text-blue-500 transition duration-200"
             >
               Logout
             </button>
