@@ -6,7 +6,7 @@ cd your-repo
 Make sure you have Node.js and npm installed, then:
 npm install
 3. Set Up Python Environment
-Make sure Python 3.8+ is installed. Create a virtual environment (optional but recommended):
+Make sure Python 3.12.7 is installed. Create a virtual environment (optional but recommended):
 python -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
 Then install Python dependencies. Inside the root backend folder (where server.py is located):
