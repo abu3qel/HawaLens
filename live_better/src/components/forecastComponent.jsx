@@ -53,7 +53,7 @@ const ForecastComponent = ({ selectedCity, selectedCoordinates }) => {
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg w-full text-black h-full flex flex-col">
       <h2 className="text-lg font-bold mb-2">Weather Forecast</h2>
-      <p className="text-sm text-gray-500 mb-4">{selectedCity} air quality and weather forecast</p>
+      <p className="text-sm text-gray-500 mb-4">{selectedCity} weather forecast</p>
 
       {loading ? (
         <p className="text-center text-gray-500">Loading forecast...</p>
@@ -64,12 +64,12 @@ const ForecastComponent = ({ selectedCity, selectedCoordinates }) => {
             {dailyForecast.map((day, index) => (
               <div key={index} className="flex items-center justify-between p-2 rounded-md">
                 <span className="font-semibold w-16">{day.day}</span>
-                <span
+                {/* <span
                   className="px-3 py-2 rounded-md text-white font-semibold"
                   style={{ backgroundColor: day.aqi > 2 ? "#8BC34A" : "#4CAF50" }}
                 >
                   {day.aqi}
-                </span>
+                </span> */}
                 <img src={day.icon} alt="weather icon" className="w-8" />
                 <span>{day.tempMax}° / {day.tempMin}°</span>
                 <span className="flex flex-col items-center">
