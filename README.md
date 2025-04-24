@@ -11,7 +11,8 @@ python -m venv venv
 source venv/bin/activate  # On Windows use: venv\Scripts\activate
 Then install Python dependencies. Inside the root backend folder (where server.py is located):
 pip install flask flask-cors joblib pandas torch numpy requests sendgrid
-4. Add API Keys
+pip install scikit-learn==1.5.2
+5. Add API Keys
 * SendGrid: Go to SendGrid, create an API key, and replace the api_key variable in server.py: api_key = "YOUR_SENDGRID_API_KEY"
 * Update from_email in the Mail(...) section to your verified SendGrid sender email.
 5. Add Models
