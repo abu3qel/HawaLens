@@ -18,7 +18,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-MODEL_DIR = r"C:\Users\sa260\GRP1.ai\live_better\models"
+MODEL_DIR = r"C:\Users\kkun4\grp1.ai\live_better\Models"
 OPENAQ_API_KEY = "89ccb65589d25ad1b7ac1152014318f21278e61170f6c81d085574977b602188"
 OPENWEATHER_API_KEY = "554ac7e911b71cd3a8d0673582e1fa5e"
 OPENAQ_API_BASE_URL = 'https://api.openaq.org/v3'
@@ -29,10 +29,8 @@ for file in os.listdir(MODEL_DIR):
         models[pollutant] = joblib.load(os.path.join(MODEL_DIR, file))
 
 # Extract feature names from one model (assuming all models were trained with the same features)
-TRAINED_FEATURES = list(next(iter(models.values())).feature_names_in_)
 
 print("Loaded Models:", list(models.keys()))
-print("Loaded Model Features:", TRAINED_FEATURES)
 class ContinualLSTMModel(nn.Module):
     def __init__(self, input_size, hidden_size=64, num_layers=2, dropout=0.2):
         super(ContinualLSTMModel, self).__init__()
@@ -68,8 +66,17 @@ class ContinualLSTMModel(nn.Module):
     
 
 
-MODEL_PATH = r"C:\Users\sa260\GRP1.ai\live_better\models\pm25_model.pt"
-model = torch.load(MODEL_PATH, map_location=torch.device('cpu'), weights_only=False)
+MODEL_PATH = r"C:\Users\kkun4\grp1.ai\live_better\Models\pm25_model_state_14.pt"
+INPUT_SIZE = 34  # Replace with actual number of features used during training
+
+# Step 2: Create model instance
+model = ContinualLSTMModel(input_size=INPUT_SIZE)
+
+# Step 3: Load saved weights (state_dict)
+state_dict = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
+model.load_state_dict(state_dict)
+
+# Step 4: Set model to eval mode
 model.eval()
 
 # AQI Breakpoints (Same as Frontend)
