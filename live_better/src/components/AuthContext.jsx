@@ -87,10 +87,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const triggerEmailAlert = async (location, aqiLevel) => {
-    if (!currentUser?.email || !emailPreferences.aqiAlerts || aqiLevel < userPreferences.aqiAlertThreshold) return;
-    
+    console.log("[triggerEmailAlert] Called with", {
+      email: currentUser?.email,
+      aqiAlerts: emailPreferences.aqiAlerts,
+      threshold: userPreferences.aqiAlertThreshold,
+      level: aqiLevel
+    });
+    if (!currentUser?.email || !emailPreferences.aqiAlerts || aqiLevel <= userPreferences.aqiAlertThreshold) return;
+    console.log("triggerEmailAlert", location, aqiLevel);
     try {
-      const response = await fetch('/api/send-aqi-alert', {
+      const response = await fetch('api/send-aqi-alert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
