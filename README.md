@@ -18,7 +18,7 @@ pip install flask flask-cors joblib pandas torch numpy requests sendgrid
 * Download the model from the provided Google Drive link.
 * https://drive.google.com/file/d/1kFEcnLDZ2Y48RLz_GjW1sBAaA_6HCiR1/view?usp=sharing
 * Create a folder named Models inside your project root: mkdir models.
-* Place your .pkl and .pt model files into the Models/ directory.
+* Place your .pt model files into the Models/ directory.
 6. Run the Python Server
 From the backend folder run:
 python server.py
