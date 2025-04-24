@@ -30,14 +30,14 @@ const CitySearch = ({ onSelectCity }) => {
         placeholder="Search for a city..."
         value={query}
         onChange={handleSearch}
-        className="w-full border border-gray-300 rounded-md px-3 py-2"
+        className="w-full border border-gray-300 rounded-md px-3 py-2 text-black"
       />
       {suggestions.length > 0 && (
-        <ul className="absolute bg-white border border-gray-300 w-full mt-1 rounded-md shadow-md z-50">
+        <ul className="absolute bg-white border border-gray-300 w-full mt-1 rounded-md shadow-md z-50 text-black">
           {suggestions.map((city, index) => (
             <li
               key={index}
-              className="p-2 hover:bg-gray-100 cursor-pointer text-black"
+              className="p-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => handleSelect(city)}
             >
               {city.name}, {city.country}
