@@ -461,5 +461,40 @@ def get_aqi():
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
+    
+import sendgrid
+from sendgrid.helpers.mail import Mail
+
+@app.route('/api/send-aqi-alert', methods=['POST'])
+def send_aqi_alert():
+    try:
+        data = request.json
+        
+        recipient_email = data.get('email')
+        location_name = data.get('locationName')
+        aqi_level = data.get('aqi')
+        
+        if not all([recipient_email, location_name, aqi_level]):
+            return jsonify({"error": "Missing parameters"}), 400
+
+        sg = sendgrid.SendGridAPIClient(api_key=api_key)
+        
+        message = Mail(
+            from_email='hawalens.corp@gmail.com',
+            to_emails=recipient_email,
+            subject=f'AQI Alert: {location_name}',
+            html_content=f"""
+                <strong>Air Quality Alert</strong>
+                <p>Location: {location_name}</p>
+                <p>AQI Level: {aqi_level}</p>
+            """
+        )
+        
+        response = sg.send(message)
+        return jsonify({"success": True, "status": response.status_code})
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
