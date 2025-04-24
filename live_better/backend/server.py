@@ -67,19 +67,14 @@ class ContinualLSTMModel(nn.Module):
 
 
 MODEL_PATH = r"C:\Users\kkun4\grp1.ai\live_better\Models\pm25_model_state_14.pt"
-INPUT_SIZE = 34  # Replace with actual number of features used during training
-
-# Step 2: Create model instance
+INPUT_SIZE = 34 
 model = ContinualLSTMModel(input_size=INPUT_SIZE)
 
-# Step 3: Load saved weights (state_dict)
 state_dict = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
 model.load_state_dict(state_dict)
 
-# Step 4: Set model to eval mode
 model.eval()
 
-# AQI Breakpoints (Same as Frontend)
 AQI_BREAKPOINTS = {
     "pm2_5": [
         {"BPLo": 0, "BPHi": 12, "ILo": 0, "IHi": 50},
