@@ -1,30 +1,102 @@
-Follow these steps to get the application running locally.
-1. Clone the Repository
+## Getting Started – Local Development Setup
+
+Follow these steps to run the HawaLens application locally:
+
+---
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
-2. Install Frontend Dependencies
-Make sure you have Node.js and npm installed, then:
+```
+
+---
+
+### 2. Install Frontend Dependencies
+
+Ensure you have **Node.js** and **npm** installed.
+
+```bash
 npm install
-3. Set Up Python Environment
-Make sure Python 3.12.7 is installed. Create a virtual environment (optional but recommended):
+```
+
+---
+
+### 3. Set Up Python Environment
+
+Ensure **Python 3.12.7** is installed.
+
+Create a virtual environment (recommended):
+
+```bash
 python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-Then install Python dependencies. Inside the root backend folder (where server.py is located):
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+Then install required backend dependencies:
+
+```bash
 pip install flask flask-cors joblib pandas torch numpy requests sendgrid
 pip install scikit-learn==1.5.2
-5. Add API Keys
-* SendGrid: Go to SendGrid, create an API key, and replace the api_key variable in server.py: api_key = "YOUR_SENDGRID_API_KEY"
-* Update from_email in the Mail(...) section to your verified SendGrid sender email.
-5. Add Models
-* Download the model from the provided Google Drive link.
-* https://drive.google.com/file/d/1kFEcnLDZ2Y48RLz_GjW1sBAaA_6HCiR1/view?usp=sharing
-* Create a folder named Models inside your project root: mkdir models.
-* Place your .pt model files into the Models/ directory.
-6. Run the Python Server
-From the backend folder run:
+```
+
+---
+
+### 4. Configure API Keys
+
+**SendGrid:**
+
+* Go to [SendGrid](https://sendgrid.com), generate an API key.
+* In `server.py`, replace the placeholder:
+
+```python
+api_key = "YOUR_SENDGRID_API_KEY"
+```
+
+* Also update the `from_email` field in the `Mail(...)` section to your **verified SendGrid sender email**.
+
+---
+
+### 5. Add Model Files
+
+* Download the pre-trained model from [Google Drive](https://drive.google.com/file/d/1kFEcnLDZ2Y48RLz_GjW1sBAaA_6HCiR1/view?usp=sharing).
+* Create a folder for models:
+
+```bash
+mkdir models
+```
+
+* Place all `.pt` model files inside the newly created `models/` directory.
+
+---
+
+### 6. Start the Backend Server
+
+Navigate to the backend folder and run:
+
+```bash
 python server.py
-This will start your Flask backend on http://localhost:5001.
-7. Run the Frontend
-In a separate terminal, start the frontend React app:
+```
+
+This starts the Flask backend at:
+
+```
+http://localhost:5001
+```
+
+---
+
+### 7. Start the Frontend App
+
+In a new terminal (from the project root):
+
+```bash
 npm run dev
-This should launch your development server at http://localhost:5173
+```
+
+Your React frontend will launch at:
+
+```
+http://localhost:5173
+```
