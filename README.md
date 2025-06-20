@@ -1,3 +1,8 @@
+## Product Overview
+You can have access to the product overview by downloading the presentation slides of HawaLens in the link below:
+
+https://drive.google.com/file/d/18wDpDTj-RS-i5_qRCfivDvQpMlcdGlKe/view?usp=sharing
+
 ## Getting Started – Local Development Setup
 
 Follow these steps to run the HawaLens application locally:
